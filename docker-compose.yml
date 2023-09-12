@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  supermercado-service:
+    image: guilhermejr/sistema-remedios-service
+    container_name: remedios-service
+    restart: always
+    ports:
+      - "9006:9006"
+
+networks:
+  default:
+    external:
+      name: rede
