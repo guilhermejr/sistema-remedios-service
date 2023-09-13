@@ -8,14 +8,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SintomaResponse {
+public class SintomaResponse extends SintomaResumidoResponse {
 
-    private Long id;
-    private String descricao;
     private Set<RemedioResumidoResponse> remedios;
     private LocalDateTime criado;
     private LocalDateTime atualizado;
