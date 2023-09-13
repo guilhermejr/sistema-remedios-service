@@ -1,6 +1,7 @@
 *.log
 *.DS_Store
 *.gz
+create.sql
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
