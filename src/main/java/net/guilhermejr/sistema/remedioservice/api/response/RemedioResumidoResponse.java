@@ -16,8 +16,6 @@ public class RemedioResumidoResponse {
     private Long id;
     private String nome;
     private Integer quantidade;
-    private String descricao;
-    private String posologia;
     private LocalDate validade;
     private Long diasParaValidade;
 

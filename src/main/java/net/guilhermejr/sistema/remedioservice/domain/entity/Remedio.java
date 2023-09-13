@@ -50,6 +50,9 @@ public class Remedio implements Serializable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String posologia;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String contraIndicacao;
+
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
     private LocalDate validade;

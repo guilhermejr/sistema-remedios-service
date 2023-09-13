@@ -31,6 +31,9 @@ public class RemedioRequest {
     private String posologia;
 
     @NotBlank
+    private String contraIndicacao;
+
+    @NotBlank
     @DataBrasil
     private String validade;
 

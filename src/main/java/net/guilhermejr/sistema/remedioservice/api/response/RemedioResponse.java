@@ -13,6 +13,10 @@ import java.util.UUID;
 @ToString
 public class RemedioResponse extends RemedioResumidoResponse {
 
+
+    private String descricao;
+    private String posologia;
+    private String contraIndicacao;
     private Set<SintomaResumidoResponse > sintomas;
     private LocalDateTime criado;
     private LocalDateTime atualizado;
