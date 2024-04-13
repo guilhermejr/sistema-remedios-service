@@ -1,13 +1,4 @@
 spring:
-#  jpa:
-#    properties:
-#      javax:
-#        persistence:
-#          schema-generation:
-#            scripts:
-#              action: create
-#              create-target: create.sql
-#              create-source: metadata
   application:
     name: remedios-service
   profiles:
@@ -27,6 +18,17 @@ spring:
     config:
       username: ${CONFIG_SERVER_USER:config}
       password: ${CONFIG_SERVER_PASS:o5qByEjgPOwh3yXOqf}
+  boot:
+    admin:
+      client:
+        url: ${monitoramentoHost}
+        username: ${monitoramentoUser}
+        password: ${monitoramentoPass}
+        instance:
+          metadata:
+            user:
+              name: ${actuatorUser}
+              password: ${actuatorPass}
 
 logging:
   file:
