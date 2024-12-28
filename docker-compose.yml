@@ -1,5 +1,5 @@
 services:
-  supermercado-service:
+  remedios-service:
     image: guilhermejr/sistema-remedios-service
     container_name: remedios-service
     restart: always
@@ -8,5 +8,5 @@ services:
 
 networks:
   default:
-    external:
-      name: rede
+    external: true
+    name: rede
