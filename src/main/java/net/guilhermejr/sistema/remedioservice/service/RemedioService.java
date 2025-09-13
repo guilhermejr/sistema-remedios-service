@@ -15,6 +15,7 @@ import net.guilhermejr.sistema.remedioservice.exception.ExceptionNotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -82,6 +83,14 @@ public class RemedioService {
             log.error("Remédio não apagado: {}", id);
             throw new ExceptionNotFound("Não pode apagar remédio. Id não encontrado: " + id);
         }
+
+    }
+
+    public List<RemedioResponse> listarVencimento(Integer dias) {
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate ate = hoje.plusDays(dias);
+        return remedioMapper.mapList(remedioRepository.findByValidadeBetween(hoje, ate));
 
     }
 

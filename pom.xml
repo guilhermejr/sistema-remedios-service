@@ -5,17 +5,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.10</version>
+		<version>3.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>net.guilhermejr.sistema</groupId>
 	<artifactId>remedios-service</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>remedios-service</name>
 	<description>Microserviço de remédio</description>
 	<properties>
 		<java.version>21</java.version>
-		<spring-cloud.version>2023.0.4</spring-cloud.version>
+		<spring-cloud.version>2025.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -97,11 +97,6 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>de.siegmar</groupId>
-			<artifactId>logback-gelf</artifactId>
-			<version>6.0.1</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

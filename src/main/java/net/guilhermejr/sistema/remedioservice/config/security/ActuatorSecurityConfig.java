@@ -34,13 +34,13 @@ public class ActuatorSecurityConfig {
     public SecurityFilterChain filterChainActuatorAndSwagger(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic(Customizer.withDefaults())
+                .securityMatcher("/actuator/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").hasRole("ACTUATOR")
-                        .anyRequest().permitAll()
+                        .anyRequest().hasRole("ACTUATOR")
                 )
+                .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(Customizer.withDefaults());
+                .formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

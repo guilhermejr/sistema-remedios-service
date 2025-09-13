@@ -41,6 +41,14 @@ public class RemedioController {
 
     }
 
+    @GetMapping("/vencendo")
+    public ResponseEntity<List<RemedioResponse>> vencendo() {
+
+        log.info("Listando remédios que estão vencendo");
+        List<RemedioResponse> remedioResponseList = remedioService.listarVencimento(15);
+        return ResponseEntity.status(HttpStatus.OK).body(remedioResponseList);
+    }
+
     @PostMapping
     public ResponseEntity<RemedioResponse> inserir(@Valid @RequestBody RemedioRequest remedioRequest) {
 
