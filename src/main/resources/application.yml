@@ -32,8 +32,3 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-
-logging:
-  file:
-    name: log.log
-    path: .

@@ -15,6 +15,8 @@ public class RemedioResponse extends RemedioResumidoResponse {
 
 
     private String descricao;
+    private Integer dose;
+    private Integer estoqueBaixo;
     private String posologia;
     private String contraIndicacao;
     private Set<SintomaResumidoResponse > sintomas;

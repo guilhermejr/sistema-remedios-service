@@ -44,6 +44,12 @@ public class Remedio implements Serializable {
     @Column(nullable = false)
     private Integer quantidade;
 
+    @Column(nullable = false)
+    private Integer dose;
+
+    @Column(nullable = false)
+    private Integer estoqueBaixo;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descricao;
 

@@ -6,8 +6,10 @@ import net.guilhermejr.sistema.remedioservice.api.mapper.RemedioMapper;
 import net.guilhermejr.sistema.remedioservice.api.request.RemedioRequest;
 import net.guilhermejr.sistema.remedioservice.api.response.RemedioResponse;
 import net.guilhermejr.sistema.remedioservice.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.sistema.remedioservice.domain.entity.Consumo;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Remedio;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Sintoma;
+import net.guilhermejr.sistema.remedioservice.domain.repository.ConsumoRepository;
 import net.guilhermejr.sistema.remedioservice.domain.repository.RemedioRepository;
 import net.guilhermejr.sistema.remedioservice.domain.repository.SintomaRepository;
 import net.guilhermejr.sistema.remedioservice.exception.ExceptionDefault;
@@ -27,6 +29,7 @@ public class RemedioService {
 
     private final RemedioRepository remedioRepository;
     private final SintomaRepository sintomaRepository;
+    private final ConsumoRepository consumoRepository;
     private final RemedioMapper remedioMapper;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
@@ -35,6 +38,15 @@ public class RemedioService {
         UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
 
         List<Remedio> remedioList = remedioRepository.findAllByUsuarioOrderByNomeAsc(usuario);
+        return remedioMapper.mapList(remedioList);
+
+    }
+
+    public List<RemedioResponse> retornarEstoqueBaixo() {
+
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+
+        List<Remedio> remedioList = remedioRepository.findRemediosComEstoqueBaixo(usuario);
         return remedioMapper.mapList(remedioList);
 
     }
@@ -66,6 +78,44 @@ public class RemedioService {
         } else {
             log.error("Remédio não atualizado: {}", id);
             throw new ExceptionNotFound("Não pode atualizar remédio. Id não encontrado: " + id);
+        }
+
+    }
+
+    @Transactional
+    public RemedioResponse consumir(Long id) {
+
+        Remedio remedio = remedioExiste(id);
+
+        if (remedio != null) {
+
+            Integer quantidade = remedio.getQuantidade();
+            Integer dose = remedio.getDose();
+
+            if (quantidade > 0 && quantidade >= dose) {
+
+                remedio.setQuantidade(remedio.getQuantidade() - dose);
+
+                UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+
+                Consumo consumo = Consumo
+                        .builder()
+                        .remedio(remedio)
+                        .usuario(usuario)
+                        .build();
+
+                consumoRepository.save(consumo);
+                return remedioMapper.mapObject(remedio);
+
+            } else {
+                log.error("Quantidade de remédios menor ou igual a 0: {}", id);
+                throw new ExceptionNotFound("Não pode consumir remédio. Quantidade menor ou igual a 0: " + id);
+            }
+
+
+        } else {
+            log.error("Remédio não consumido: {}", id);
+            throw new ExceptionNotFound("Não pode consumir remédio. Id não encontrado: " + id);
         }
 
     }

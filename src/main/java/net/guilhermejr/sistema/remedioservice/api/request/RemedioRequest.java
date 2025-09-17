@@ -24,6 +24,14 @@ public class RemedioRequest {
     @NotNull
     private Integer quantidade;
 
+    @Min(1)
+    @NotNull
+    private Integer dose;
+
+    @Min(1)
+    @NotNull
+    private Integer estoqueBaixo;
+
     @NotBlank
     private String descricao;
 

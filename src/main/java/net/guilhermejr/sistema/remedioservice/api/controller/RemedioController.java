@@ -32,6 +32,15 @@ public class RemedioController {
 
     }
 
+    @GetMapping("/estoque-baixo")
+    public ResponseEntity<List<RemedioResponse>> retornarEstoqueBaixo() {
+
+        log.info("Retornando remédios com estoque baixo");
+        List<RemedioResponse> remedioResponseList = remedioService.retornarEstoqueBaixo();
+        return ResponseEntity.status(HttpStatus.OK).body(remedioResponseList);
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RemedioResponse> retornarUm(@PathVariable Long id) {
 
@@ -45,8 +54,9 @@ public class RemedioController {
     public ResponseEntity<List<RemedioResponse>> vencendo() {
 
         log.info("Listando remédios que estão vencendo");
-        List<RemedioResponse> remedioResponseList = remedioService.listarVencimento(15);
+        List<RemedioResponse> remedioResponseList = remedioService.listarVencimento(30);
         return ResponseEntity.status(HttpStatus.OK).body(remedioResponseList);
+
     }
 
     @PostMapping
@@ -63,6 +73,15 @@ public class RemedioController {
 
         log.info("Atualizando remédio: {}", id);
         RemedioResponse remedioResponse = remedioService.atualizar(id, remedioRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(remedioResponse);
+
+    }
+
+    @PutMapping("/consumir/{id}")
+    public ResponseEntity<RemedioResponse> consumir(@PathVariable Long id) {
+
+        log.info("Consumindo remédio: {}", id);
+        RemedioResponse remedioResponse = remedioService.consumir(id);
         return ResponseEntity.status(HttpStatus.OK).body(remedioResponse);
 
     }

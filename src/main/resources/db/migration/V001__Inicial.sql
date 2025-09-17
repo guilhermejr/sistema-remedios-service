@@ -1,3 +1,11 @@
+create table consumos (
+    id bigserial not null,
+    remedio_id bigint not null,
+    criado timestamp without time zone,
+    usuario uuid not null,
+    primary key (id)
+);
+
 create table remedios (
     id bigserial not null,
     nome varchar(255) not null,
@@ -5,7 +13,9 @@ create table remedios (
     posologia TEXT not null,
     contra_indicacao TEXT NOT NULL,
     quantidade integer not null,
+    dose integer not null,
     validade date not null,
+    estoque_baixo integer not null,
     criado timestamp without time zone,
     atualizado timestamp without time zone,
     usuario uuid not null,
@@ -26,6 +36,11 @@ create table sintomas (
     usuario uuid not null,
     primary key (id)
 );
+
+alter table if exists consumos
+   add constraint FKgdfy64ghwgd764gfdgheu3tda
+   foreign key (remedio_id)
+   references remedios;
 
 alter table if exists remedios_sintomas
    add constraint FKsskajf542kba5xxhgp5xdq105
