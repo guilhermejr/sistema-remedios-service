@@ -10,6 +10,7 @@ import net.guilhermejr.sistema.remedioservice.domain.entity.Sintoma;
 import net.guilhermejr.sistema.remedioservice.domain.repository.SintomaRepository;
 import net.guilhermejr.sistema.remedioservice.exception.ExceptionDefault;
 import net.guilhermejr.sistema.remedioservice.exception.ExceptionNotFound;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,14 +94,21 @@ public class SintomaService {
 
     }
 
-    @Transactional
     public void apagar(Long id) {
 
         Sintoma sintoma = sintomaExiste(id);
 
         if (sintoma != null) {
 
-            sintomaRepository.deleteById(id);
+            try {
+                sintomaRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                log.error("Sintoma não apagado pois está relacionado a um ou mais remédios. Id do sintoma: {}", id);
+                throw new ExceptionDefault("Sintoma não apagado pois está relacionado a um ou mais remédios.");
+            } catch (Exception e) {
+                log.error("Erro desconhecido: {}", e.getMessage());
+                throw new ExceptionDefault("Ocorreu um erro inesperado");
+            }
 
         } else {
             log.error("Sintoma não apagado: {}", id);
