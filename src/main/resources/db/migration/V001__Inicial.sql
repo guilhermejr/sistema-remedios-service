@@ -50,4 +50,5 @@ alter table if exists remedios_sintomas
 alter table if exists remedios_sintomas
    add constraint FKjfpobqc0n9whe10wymarkj2hp
    foreign key (remedio_id)
-   references remedios;
+   references remedios(id)
+   on delete cascade;
