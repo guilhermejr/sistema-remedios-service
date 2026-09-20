@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import net.guilhermejr.sistema.remedioservice.api.mapper.SintomaMapper;
 import net.guilhermejr.sistema.remedioservice.api.request.SintomaRequest;
 import net.guilhermejr.sistema.remedioservice.api.response.SintomaResponse;
-import net.guilhermejr.sistema.remedioservice.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Sintoma;
 import net.guilhermejr.sistema.remedioservice.domain.repository.SintomaRepository;
 import net.guilhermejr.sistema.remedioservice.exception.ExceptionDefault;

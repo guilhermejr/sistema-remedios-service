@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import net.guilhermejr.sistema.remedioservice.api.mapper.RemedioMapper;
 import net.guilhermejr.sistema.remedioservice.api.request.RemedioRequest;
 import net.guilhermejr.sistema.remedioservice.api.response.RemedioResponse;
-import net.guilhermejr.sistema.remedioservice.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Consumo;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Remedio;
 import net.guilhermejr.sistema.remedioservice.domain.entity.Sintoma;
