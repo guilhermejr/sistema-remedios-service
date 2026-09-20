@@ -10,5 +10,8 @@ ENV VAULT_TOKEN=${VAULT_TOKEN}
 ENV CONFIG_SERVER_USER=${CONFIG_SERVER_USER}
 ENV CONFIG_SERVER_PASS=${CONFIG_SERVER_PASS}
 COPY sistema-remedios-service.jar sistema-remedios-service.jar
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+  CMD curl -fsS http://localhost:9006/remedios-service/actuator/health | grep -q '"status":"UP"' || exit 1
+
 ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/sistema-remedios-service.jar"]
 EXPOSE 9006
