@@ -27,6 +27,30 @@ To override any piece, declare your own bean of the same type — or, for the ch
 
 The signing key is `sistema.auth.jwtSecret`, shared across all services. It must be Base64 decoding to at least 64 bytes (HS512). A weak value fails at startup with an explicit message rather than being silently accepted.
 
+## Every lookup by id is scoped to the owner
+
+`RemedioService.remedioDoUsuario` and `SintomaService.sintomaDoUsuario` are the only
+way an id reaches the database, and both go through `findByIdAndUsuario`. A record
+belonging to someone else answers **404, not 403**, so the endpoint never reveals
+that the id exists. `salvar` links only symptoms owned by the caller, so a medicine
+cannot be attached to another user's symptom.
+
+`consumir` keeps taking the user from the security context, but `inserir` on the
+purchase side of the system is the opposite case — check how a scheduled task calls
+a service before switching it to read the context.
+
+Two endpoint semantics worth knowing:
+
+- **`/remedios/vencendo` includes what already expired.** The query is
+  `validade <= hoje + dias`, deliberately without a lower bound: a medicine that
+  expired yesterday is more urgent than one expiring in 29 days, and the old
+  `BETWEEN hoje AND ate` dropped it off the bottom of the range. Results come
+  ordered by `validade` ascending.
+- **Insufficient stock is a 400, not a 404.** `consumir` throws `ExceptionDefault`
+  when `quantidade < dose`, and the message names the medicine and both numbers.
+  It used to be `ExceptionNotFound` with a message that always said "menor ou igual
+  a 0" regardless of the real cause.
+
 ## Database migrations
 
 PostgreSQL with Flyway, migrations in `src/main/resources/db/migration`.

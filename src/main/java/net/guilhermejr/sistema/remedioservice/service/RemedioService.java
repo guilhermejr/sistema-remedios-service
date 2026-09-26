@@ -53,7 +53,7 @@ public class RemedioService {
 
     public RemedioResponse retornarUm(Long id) {
 
-        Remedio remedio = remedioExiste(id);
+        Remedio remedio = remedioDoUsuario(id);
         if (remedio != null) {
             return remedioMapper.mapObject(remedio);
         } else {
@@ -73,7 +73,7 @@ public class RemedioService {
     @Transactional
     public RemedioResponse atualizar(Long id, RemedioRequest remedioRequest) {
 
-        if (remedioExiste(id) != null) {
+        if (remedioDoUsuario(id) != null) {
             return salvar(remedioRequest, id);
         } else {
             log.error("Remédio não atualizado: {}", id);
@@ -85,14 +85,14 @@ public class RemedioService {
     @Transactional
     public RemedioResponse consumir(Long id) {
 
-        Remedio remedio = remedioExiste(id);
+        Remedio remedio = remedioDoUsuario(id);
 
         if (remedio != null) {
 
             Integer quantidade = remedio.getQuantidade();
             Integer dose = remedio.getDose();
 
-            if (quantidade > 0 && quantidade >= dose) {
+            if (dose > 0 && quantidade >= dose) {
 
                 remedio.setQuantidade(remedio.getQuantidade() - dose);
 
@@ -108,8 +108,9 @@ public class RemedioService {
                 return remedioMapper.mapObject(remedio);
 
             } else {
-                log.error("Quantidade de remédios menor ou igual a 0: {}", id);
-                throw new ExceptionNotFound("Não pode consumir remédio. Quantidade menor ou igual a 0: " + id);
+                log.error("Estoque insuficiente para consumir o remédio {}: estoque {}, dose {}", id, quantidade, dose);
+                throw new ExceptionDefault("Não pode consumir " + remedio.getNome()
+                        + ": estoque de " + quantidade + " não cobre a dose de " + dose + ".");
             }
 
 
@@ -123,7 +124,7 @@ public class RemedioService {
     @Transactional
     public void apagar(Long id) {
 
-        Remedio remedio = remedioExiste(id);
+        Remedio remedio = remedioDoUsuario(id);
 
         if (remedio != null) {
 
@@ -138,9 +139,10 @@ public class RemedioService {
 
     public List<RemedioResponse> listarVencimento(Integer dias) {
 
-        LocalDate hoje = LocalDate.now();
-        LocalDate ate = hoje.plusDays(dias);
-        return remedioMapper.mapList(remedioRepository.findByValidadeBetween(hoje, ate));
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+
+        LocalDate ate = LocalDate.now().plusDays(dias);
+        return remedioMapper.mapList(remedioRepository.findVencendoAte(usuario, ate));
 
     }
 
@@ -158,7 +160,7 @@ public class RemedioService {
 
         Set<Sintoma> sintomas = new HashSet<>();
         remedio.getSintomas().forEach(s -> {
-            Sintoma sintoma = sintomaRepository.findById(s.getId())
+            Sintoma sintoma = sintomaRepository.findByIdAndUsuario(s.getId(), usuario)
                     .orElseThrow(() -> {
                         log.error("Sintoma {} não encontrado para o usuário {}", s.getId(), usuario);
                         return new ExceptionNotFound("Sintoma não encontrado");
@@ -192,9 +194,14 @@ public class RemedioService {
 
     }
 
-    private Remedio remedioExiste(Long id) {
-        Optional<Remedio> remedio = remedioRepository.findById(id);
-        return remedio.orElse(null);
+    /**
+     * Devolve o remédio somente se ele for do usuário autenticado. Todas as operações
+     * por id passam por aqui, então remédio de outro usuário responde "não encontrado"
+     * em vez de 403 — não revela que o id existe.
+     */
+    private Remedio remedioDoUsuario(Long id) {
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        return remedioRepository.findByIdAndUsuario(id, usuario).orElse(null);
     }
 
 }

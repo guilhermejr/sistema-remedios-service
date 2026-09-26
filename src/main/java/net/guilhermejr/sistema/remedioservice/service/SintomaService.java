@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
@@ -40,7 +39,7 @@ public class SintomaService {
 
     public SintomaResponse retornarUm(Long id) {
 
-        Sintoma sintoma = sintomaExiste(id);
+        Sintoma sintoma = sintomaDoUsuario(id);
         if (sintoma != null) {
             return sintomaMapper.mapObject(sintoma);
         } else {
@@ -72,7 +71,7 @@ public class SintomaService {
     @Transactional
     public SintomaResponse atualizar(Long id, SintomaRequest sintomaRequest) {
 
-        Sintoma sintoma = sintomaExiste(id);
+        Sintoma sintoma = sintomaDoUsuario(id);
         if (sintoma != null) {
 
             UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
@@ -96,7 +95,7 @@ public class SintomaService {
 
     public void apagar(Long id) {
 
-        Sintoma sintoma = sintomaExiste(id);
+        Sintoma sintoma = sintomaDoUsuario(id);
 
         if (sintoma != null) {
 
@@ -126,9 +125,10 @@ public class SintomaService {
 
     }
 
-    private Sintoma sintomaExiste(Long id) {
-        Optional<Sintoma> sintoma = sintomaRepository.findById(id);
-        return sintoma.orElse(null);
+    /** Devolve o sintoma somente se ele for do usuário autenticado. */
+    private Sintoma sintomaDoUsuario(Long id) {
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        return sintomaRepository.findByIdAndUsuario(id, usuario).orElse(null);
     }
 
 }

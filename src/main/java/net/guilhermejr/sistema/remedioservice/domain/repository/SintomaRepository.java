@@ -14,4 +14,7 @@ public interface SintomaRepository extends JpaRepository<Sintoma, Long> {
     Optional<Sintoma> findByDescricaoAndUsuario(String descricao, UUID usuario);
     List<Sintoma> findAllByUsuarioOrderByDescricaoAsc(UUID usuario);
 
+    /** Busca por id restringindo ao dono: id de outro usuário não é encontrado. */
+    Optional<Sintoma> findByIdAndUsuario(Long id, UUID usuario);
+
 }

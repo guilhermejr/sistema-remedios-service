@@ -18,7 +18,16 @@ public interface RemedioRepository extends JpaRepository<Remedio, Long> {
 
     List<Remedio> findAllByUsuarioOrderByNomeAsc(UUID usuario);
 
-    List<Remedio> findByValidadeBetween(LocalDate hoje, LocalDate ate);
+    /** Busca por id restringindo ao dono: id de outro usuário não é encontrado. */
+    Optional<Remedio> findByIdAndUsuario(Long id, UUID usuario);
+
+    /**
+     * Remédios que vencem até a data informada, incluindo os que já venceram — um
+     * remédio vencido ontem é mais urgente que um que vence em 29 dias, e uma faixa
+     * a partir de hoje o deixaria de fora.
+     */
+    @Query("SELECT r FROM Remedio r WHERE r.usuario = :usuario AND r.validade <= :ate ORDER BY r.validade ASC")
+    List<Remedio> findVencendoAte(@Param("usuario") UUID usuario, @Param("ate") LocalDate ate);
 
     @Query("SELECT r FROM Remedio r WHERE r.quantidade <= r.estoqueBaixo AND r.usuario = :usuario")
     List<Remedio> findRemediosComEstoqueBaixo(@Param("usuario") UUID usuario);
