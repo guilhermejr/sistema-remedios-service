@@ -141,7 +141,7 @@ public class RemedioService {
 
         UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
 
-        LocalDate ate = LocalDate.now().plusDays(dias);
+        LocalDate ate = LocalDate.now(ZoneId.of("America/Bahia")).plusDays(dias);
         return remedioMapper.mapList(remedioRepository.findVencendoAte(usuario, ate));
 
     }

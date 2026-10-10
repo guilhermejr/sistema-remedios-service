@@ -3,6 +3,7 @@ package net.guilhermejr.sistema.remedioservice.api.response;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @Getter
@@ -21,7 +22,7 @@ public class RemedioResumidoResponse {
 
     public Long getDiasParaValidade() {
 
-        LocalDate hoje = LocalDate.now();
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Bahia"));
         return ChronoUnit.DAYS.between(hoje, this.validade);
 
     }
