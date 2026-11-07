@@ -54,7 +54,7 @@ public class SintomaService {
 
         UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
 
-        verificaSeExisteSintomaCadastrado(sintomaRequest.getDescricao(), usuario);
+        verificaSeExisteSintomaCadastrado(sintomaRequest.getDescricao(), usuario, null);
 
         LocalDateTime data = LocalDateTime.now(ZoneId.of("UTC"));
 
@@ -76,7 +76,7 @@ public class SintomaService {
 
             UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
 
-            verificaSeExisteSintomaCadastrado(sintomaRequest.getDescricao(), usuario);
+            verificaSeExisteSintomaCadastrado(sintomaRequest.getDescricao(), usuario, id);
 
             LocalDateTime data = LocalDateTime.now(ZoneId.of("UTC"));
 
@@ -116,9 +116,12 @@ public class SintomaService {
 
     }
 
-    private void verificaSeExisteSintomaCadastrado(String descricao, UUID usuario) {
+    // Na edição o próprio sintoma não conta como duplicado (salvar sem mudar a descrição).
+    private void verificaSeExisteSintomaCadastrado(String descricao, UUID usuario, Long idIgnorado) {
 
-        if (sintomaRepository.findByDescricaoAndUsuario(descricao, usuario).isPresent()) {
+        if (sintomaRepository.findByDescricaoAndUsuario(descricao, usuario)
+                .filter(existente -> !existente.getId().equals(idIgnorado))
+                .isPresent()) {
             log.error("Sintoma já cadastrado {}", descricao);
             throw new ExceptionDefault("Sintoma já cadastrado");
         }

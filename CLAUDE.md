@@ -50,6 +50,11 @@ Two endpoint semantics worth knowing:
   has no cascade, so `apagar` runs `ConsumoRepository.apagarDoRemedio` first; before
   that, deleting a medicine that had ever been consumed failed with a 500. Nothing
   reads `consumos` today — revisit this if a history endpoint is ever added.
+- **Duplicate symptom check skips the symptom being edited.** `verificaSeExisteSintomaCadastrado`
+  takes the id to ignore; before, saving a symptom without changing its description
+  answered "Sintoma já cadastrado". A symptom still linked to a medicine can't be
+  deleted (400) — `apagar` is deliberately not `@Transactional`, so the FK violation
+  surfaces inside its `try` instead of at commit.
 - **Insufficient stock is a 400, not a 404.** `consumir` throws `ExceptionDefault`
   when `quantidade < dose`, and the message names the medicine and both numbers.
   It used to be `ExceptionNotFound` with a message that always said "menor ou igual
