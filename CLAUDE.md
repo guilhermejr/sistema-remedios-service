@@ -46,6 +46,10 @@ Two endpoint semantics worth knowing:
   expired yesterday is more urgent than one expiring in 29 days, and the old
   `BETWEEN hoje AND ate` dropped it off the bottom of the range. Results come
   ordered by `validade` ascending.
+- **Deleting a medicine deletes its consumption history.** `consumos.remedio_id`
+  has no cascade, so `apagar` runs `ConsumoRepository.apagarDoRemedio` first; before
+  that, deleting a medicine that had ever been consumed failed with a 500. Nothing
+  reads `consumos` today — revisit this if a history endpoint is ever added.
 - **Insufficient stock is a 400, not a 404.** `consumir` throws `ExceptionDefault`
   when `quantidade < dose`, and the message names the medicine and both numbers.
   It used to be `ExceptionNotFound` with a message that always said "menor ou igual

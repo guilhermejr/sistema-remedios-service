@@ -128,6 +128,8 @@ public class RemedioService {
 
         if (remedio != null) {
 
+            // O histórico de consumo vai junto: nenhum endpoint o lê.
+            consumoRepository.apagarDoRemedio(remedio);
             remedioRepository.deleteById(id);
 
         } else {
