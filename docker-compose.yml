@@ -4,7 +4,7 @@ services:
     container_name: remedios-service
     restart: always
     ports:
-      - "9006:9006"
+      - "127.0.0.1:9006:9006"
 
 networks:
   default:
