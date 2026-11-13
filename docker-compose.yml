@@ -4,6 +4,10 @@ services:
     container_name: remedios-service
     restart: always
     env_file: /home/guilhermejr/secrets/remedios-service.env
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     ports:
       - "127.0.0.1:9006:9006"
 
